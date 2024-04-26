@@ -5,7 +5,7 @@ based on binary search tree(Variant6).
 
 ## Project structure
 
-- `BinaryTreeDict.py` -- implementation of `TreeNode` class 
+- `BinaryTreeDict.py` -- implementation of `TreeNode` class
                           and feature functions in `Features`.
 - `BinaryTreeDict_test.py` -- unit and PBT test for `BinaryTreeDict`.
 
