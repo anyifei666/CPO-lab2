@@ -43,22 +43,18 @@ based on binary search tree(Variant6).
 
 ## Design notes
 
-- Since my dictionary data struction mutable implementation is based on
-  binary search tree, so this is an ordered dictionary. The keys of the
-  dictionary correspond to the indices of the binary search tree. Keys
-  are unique and can be integers, floating-point values, or strings.
-  During the binary search tree traversal, the keys are converted to
-  string values. The order of the elements in the dictionary is only
-  related to the key and is fixed. When the items are added to the dictionary,
-  they are automatically sorted by their key and added to the binary search
-  tree. So the order of the items in the dictionary can't be changed.
-  I think this is a feature of the implementation, and probably a restriction
-- In my opinion, unit tests are easy to understand and write, and the
-  execution time is fast. Relatively speaking, PBT is more complex and takes
-  longer to execute. Unit tests can only test a single function or module in
-  the code, can't cover the behavior of the entire system. And unit tests may
-  miss some edge cases or exceptions. In contrast, PBT describes the system
-  behavior based on attributes, and can generate a large number of random test
-  cases, which can cover more code paths and boundary cases. In addition,
-  PBT can automatically generate test cases, reducing the workload of manually
-  writing test cases.
+- Although the immutable implementation of lab2 is written from scratch,
+  it still takes some ideas from immutable implementation, the basic
+  ideas of BST data structure and function realization.
+- In my opinion, data can be frequently modified, saving memory in mutable
+  implementations, and it's simpler and more common than immutable
+  implementations.
+  In contrast, immutable implementation are suitable for thread safety,
+  functional programming, and version control needs.
+- Same as lab1 mutable implementation, the key will converted to type str
+  when they are compared. The key is not allowed to be None in lab1, but in
+  lab2 it is allowed to introduce a None value to key. Keys are still
+  converted to str `str(key)` when compared even the key is None. I think
+  this is an error in the implementation, but it still passes the tests. 
+  I considered using the hash of the key for comparison, but didn't implement
+  it (because the tests passed).
