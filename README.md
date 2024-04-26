@@ -55,6 +55,6 @@ based on binary search tree(Variant6).
   when they are compared. The key is not allowed to be None in lab1, but in
   lab2 it is allowed to introduce a None value to key. Keys are still
   converted to str `str(key)` when compared even the key is None. I think
-  this is an error in the implementation, but it still passes the tests. 
+  this is an error in the implementation, but it still passes the tests.
   I considered using the hash of the key for comparison, but didn't implement
   it (because the tests passed).
