@@ -1,20 +1,25 @@
-class TreeNode(object):
-    def __init__(self, key, value, left=None, right=None):
-        self.key = key
-        self.value = value
-        self.left = left
-        self.right = right
+from typing import Optional, Tuple, Generator, Dict, Any, Callable, List
 
-    def __str__(self):
+
+class TreeNode(object):
+    def __init__(self, key: Any, value: Any,
+                 left: Optional['TreeNode'] = None,
+                 right: Optional['TreeNode'] = None) -> None:
+        self.key: Any = key
+        self.value: Any = value
+        self.left: Optional['TreeNode'] = left
+        self.right: Optional['TreeNode'] = right
+
+    def __str__(self) -> str:
         return str(to_dict(self))
 
-    def __eq__(self, other):
+    def __eq__(self, other: Any) -> bool:
         if other is None:
             return False
         return str(self) == str(other)
 
 
-def cons(key, value, node):
+def cons(key: Any, value: Any, node: Optional[TreeNode]) -> TreeNode:
     if node is None:
         return TreeNode(key, value)
     if str(key) < str(node.key):
@@ -28,7 +33,7 @@ def cons(key, value, node):
         return node
 
 
-def remove(node, key):
+def remove(node: Optional[TreeNode], key: Any) -> Optional[TreeNode]:
     assert node is not None, "empty dictionary"
     if str(key) < str(node.key):
         return TreeNode(node.key, node.value,
@@ -49,20 +54,20 @@ def remove(node, key):
             return node
 
 
-def find_min(node):
+def find_min(node: TreeNode) -> TreeNode:
     current = node
     while current.left:
         current = current.left
     return current
 
 
-def size(node):
+def size(node: Optional[TreeNode]) -> int:
     if node is None:
         return 0
     return 1 + size(node.left) + size(node.right)
 
 
-def member(key, node):
+def member(key: Any, node: Optional[TreeNode]) -> Any:
     # assert key is not None, 'key cannot be None'
     if node is None:
         return False
@@ -74,7 +79,7 @@ def member(key, node):
         return member(key, node.right)
 
 
-def to_dict(node):
+def to_dict(node: Optional[TreeNode]) -> Dict[Any, Any]:
     if node is None:
         return {}
     return {**to_dict(node.left),
@@ -82,21 +87,22 @@ def to_dict(node):
             **to_dict(node.right)}
 
 
-def to_list(node):
+def to_list(node: Optional[TreeNode]) -> List[Tuple[Any, Any]]:
     if node is None:
         return []
     return to_list(node.left) + [(node.key, node.value)] + to_list(node.right)
 
 
-def from_dict(pydict):
-    mydict = None
+def from_dict(pydict: Dict[Any, Any]) -> Optional[TreeNode]:
+    mydict: Optional[TreeNode] = None
     for key, value in pydict.items():
         mydict = cons(key, value, mydict)
     return mydict
 
 
-def mfilter(node, f):
-    filtered_dict = {}
+def mfilter(node: Optional[TreeNode],
+            f: Callable[[Any, Any], bool]) -> Dict[Any, Any]:
+    filtered_dict: Dict[Any, Any] = {}
     if node is None:
         return filtered_dict
     filtered_dict.update(mfilter(node.left, f))
@@ -106,8 +112,9 @@ def mfilter(node, f):
     return filtered_dict
 
 
-def mmap(node, f):
-    mapped_dict = {}
+def mmap(node: Optional[TreeNode],
+         f: Callable[[Any, Any], Any]) -> Dict[Any, Any]:
+    mapped_dict: Dict[Any, Any] = {}
     if node is None:
         return mapped_dict
     mapped_dict.update(mmap(node.left, f))
@@ -117,8 +124,10 @@ def mmap(node, f):
     return mapped_dict
 
 
-def reduce(n, f, initial_state):
-    def _reduce(node, state):
+def reduce(n: Optional[TreeNode],
+           f: Callable[[Any, Any, Any], Any],
+           initial_state: int) -> int:
+    def _reduce(node: Optional[TreeNode], state: int) -> int:
         if node is None:
             return state
         state = _reduce(node.left, state)
@@ -128,32 +137,37 @@ def reduce(n, f, initial_state):
     return _reduce(n, initial_state)
 
 
-def iterator(node):
-    stack = []
-    current = node
+def iterator(node: Optional[TreeNode]) \
+        -> Generator[Tuple[Any, Any], None, None]:
+    stack: List[TreeNode] = []
+    current: Optional[TreeNode] = node
     while current or stack:
         while current:
             stack.append(current)
             current = current.left
         current = stack.pop()
+        assert current is not None
         yield current.key, current.value
         current = current.right
 
 
-def concat(tree1_root, tree2_root):
+def concat(tree1_root: Optional[TreeNode],
+           tree2_root: Optional[TreeNode]) -> Optional[TreeNode]:
     if tree1_root is None:
         return tree2_root
     if tree2_root is None:
         return tree1_root
 
-    # 将第二棵树的节点逐个插入到第一棵树中
-    def insert_node(root, node):
+    # Insert nodes from the second tree into the first tree
+    def insert_node(root: Optional[TreeNode],
+                    node: Optional[TreeNode]) -> Optional[TreeNode]:
         if node is None:
             return root
         return cons(node.key, node.value, root)
 
-    # 递归地将第二棵树中的节点插入到第一棵树中
-    def merge_trees(tree1, tree2):
+    # Recursively merge nodes from the second tree into the first tree
+    def merge_trees(tree1: Optional[TreeNode],
+                    tree2: Optional[TreeNode]) -> Optional[TreeNode]:
         if tree2 is None:
             return tree1
         tree1 = insert_node(tree1, tree2)
@@ -161,9 +175,9 @@ def concat(tree1_root, tree2_root):
         tree1 = merge_trees(tree1, tree2.right)
         return tree1
 
-    # 将第二棵树合并到第一棵树中
+    # Merge the second tree into the first one
     return merge_trees(tree1_root, tree2_root)
 
 
-def mempty():
+def mempty() -> Optional[TreeNode]:
     return None

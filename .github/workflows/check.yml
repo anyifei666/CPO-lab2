@@ -31,7 +31,7 @@ jobs:
 
       # type annotation checks
       - name: Type checks
-        run: mypy .
+        run: mypy . --strict
 
       - name: Format code
         run: black .

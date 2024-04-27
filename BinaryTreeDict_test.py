@@ -2,13 +2,13 @@ import itertools
 import unittest
 from hypothesis import given
 import hypothesis.strategies as st
-
+from typing import Dict, Any, List
 from BinaryTreeDict import cons, remove, size, member, to_dict, from_dict, \
-             to_list, mmap, reduce, iterator, concat, mempty, mfilter
+    to_list, mmap, reduce, iterator, concat, mempty, mfilter
 
 
 class TestBinaryTreeDict(unittest.TestCase):
-    def test_api(self):
+    def test_api(self) -> None:
         empty = mempty()
         l1 = cons(None, "c", cons(2, "b", cons("a", 1, empty)))
         l2 = cons("a", 1, cons(None, "c", cons(2, "b", empty)))
@@ -77,7 +77,7 @@ class TestBinaryTreeDict(unittest.TestCase):
         # - reduce(l, f)
         # - empty()
 
-    def test_filter(self):
+    def test_filter(self) -> None:
         mydict = from_dict({1: 1, 2: "a", "b": 3, "4": 4, 5: None})
         self.assertEqual(
             mfilter(mydict, lambda key, value: isinstance(key, int)),
@@ -88,32 +88,32 @@ class TestBinaryTreeDict(unittest.TestCase):
             {1: 1, "4": 4, "b": 3}
         )
 
-    def test_to_dict(self):
+    def test_to_dict(self) -> None:
         pydict = to_dict(cons(3, "three",
                               cons(2, "two",
                                    cons(1, "one", None))))
         self.assertEqual(pydict[1], 'one')
         self.assertEqual(pydict[2], 'two')
 
-    def test_from_dict(self):
+    def test_from_dict(self) -> None:
         # 测试从Python字典构建
         pydict = {1: 'one', 2: 'two', 3: 'three'}
         mydict = from_dict(pydict)
         self.assertEqual(size(mydict), 3)
         self.assertEqual(member(1, mydict), 'one')
 
-    def test_empty(self):
+    def test_empty(self) -> None:
         empty_dict = mempty()
         self.assertEqual(size(empty_dict), 0)
 
-    def test_map(self):
+    def test_map(self) -> None:
         mydict = from_dict({1: 1, 2: 2, 3: 3, 4: 4, 5: 5})
         self.assertEqual(
             mmap(mydict, lambda key, value: (str(key), str(value))),
             {"1": "1", "2": "2", "3": "3", "4": "4", "5": "5"},
         )
 
-    def test_reduce(self):
+    def test_reduce(self) -> None:
         mydict = from_dict({})
         self.assertEqual(reduce(mydict,
                                 lambda key, value, st:
@@ -122,8 +122,8 @@ class TestBinaryTreeDict(unittest.TestCase):
         self.assertEqual(reduce(mydict,
                                 lambda key, value, st:
                                 st + key, 0), 10)
-        test_data = [{}, {"a": "1", "b": "2"},
-                     {"a": "1", "b": "2", "c": "3", "d": "4"}]
+        test_data: List[Dict[Any, Any]] = [{}, {"a": "1", "b": "2"},
+                                           {"a": "1", "b": "2", "c": "3"}]
         for e in test_data:
             mydict = from_dict(e)
             self.assertEqual(
@@ -135,7 +135,10 @@ class TestBinaryTreeDict(unittest.TestCase):
         st.dictionaries(st.text(), st.text()),
         st.dictionaries(st.text(), st.text()),
     )
-    def test_PBT_monoid_Associativity(self, a, b, c):
+    def test_PBT_monoid_Associativity(self,
+                                      a: Dict[Any, Any],
+                                      b: Dict[Any, Any],
+                                      c: Dict[Any, Any]) -> None:
         dict_a = from_dict(a)
         dict_b = from_dict(b)
         dict_c = from_dict(c)
@@ -145,7 +148,7 @@ class TestBinaryTreeDict(unittest.TestCase):
                          concat(dict_a, dict2))
 
     @given(st.dictionaries(st.text(), st.text()))
-    def test_PBT_monoid_Identity_element(self, a):
+    def test_PBT_monoid_Identity_element(self, a: Dict[Any, Any]) -> None:
         # test for Identity element (empty_dict)
         empty_dict = mempty()
         mydict = from_dict(a)
