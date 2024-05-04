@@ -1,7 +1,7 @@
 from typing import Optional, Tuple, Generator, Dict, Callable, List, Union
 
-KeyType = Union[str, int, None]
-ValueType = Union[str, int, None]
+KeyType = Union[str, int, float, None]
+ValueType = Union[str, int, float, None]
 
 
 class TreeNode(object):
