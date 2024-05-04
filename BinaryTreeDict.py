@@ -1,25 +1,28 @@
-from typing import Optional, Tuple, Generator, Dict, Any, Callable, List
+from typing import Optional, Tuple, Generator, Dict, Callable, List, Union
+
+KeyType = Union[str, int, None]
+ValueType = Union[str, int, None]
 
 
 class TreeNode(object):
-    def __init__(self, key: Any, value: Any,
+    def __init__(self, key: KeyType, value: ValueType,
                  left: Optional['TreeNode'] = None,
                  right: Optional['TreeNode'] = None) -> None:
-        self.key: Any = key
-        self.value: Any = value
+        self.key: KeyType = key
+        self.value: ValueType = value
         self.left: Optional['TreeNode'] = left
         self.right: Optional['TreeNode'] = right
 
     def __str__(self) -> str:
         return str(to_dict(self))
 
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: object) -> bool:
         if other is None:
             return False
         return str(self) == str(other)
 
 
-def cons(key: Any, value: Any, node: Optional[TreeNode]) -> TreeNode:
+def cons(key: KeyType, value: ValueType, node: Optional[TreeNode]) -> TreeNode:
     if node is None:
         return TreeNode(key, value)
     if str(key) < str(node.key):
@@ -33,7 +36,7 @@ def cons(key: Any, value: Any, node: Optional[TreeNode]) -> TreeNode:
         return node
 
 
-def remove(node: Optional[TreeNode], key: Any) -> Optional[TreeNode]:
+def remove(node: Optional[TreeNode], key: KeyType) -> Optional[TreeNode]:
     assert node is not None, "empty dictionary"
     if str(key) < str(node.key):
         return TreeNode(node.key, node.value,
@@ -67,7 +70,7 @@ def size(node: Optional[TreeNode]) -> int:
     return 1 + size(node.left) + size(node.right)
 
 
-def member(key: Any, node: Optional[TreeNode]) -> Any:
+def member(key: KeyType, node: Optional[TreeNode]) -> ValueType:
     # assert key is not None, 'key cannot be None'
     if node is None:
         return False
@@ -79,7 +82,7 @@ def member(key: Any, node: Optional[TreeNode]) -> Any:
         return member(key, node.right)
 
 
-def to_dict(node: Optional[TreeNode]) -> Dict[Any, Any]:
+def to_dict(node: Optional[TreeNode]) -> Dict[KeyType, ValueType]:
     if node is None:
         return {}
     return {**to_dict(node.left),
@@ -87,13 +90,13 @@ def to_dict(node: Optional[TreeNode]) -> Dict[Any, Any]:
             **to_dict(node.right)}
 
 
-def to_list(node: Optional[TreeNode]) -> List[Tuple[Any, Any]]:
+def to_list(node: Optional[TreeNode]) -> List[Tuple[KeyType, ValueType]]:
     if node is None:
         return []
     return to_list(node.left) + [(node.key, node.value)] + to_list(node.right)
 
 
-def from_dict(pydict: Dict[Any, Any]) -> Optional[TreeNode]:
+def from_dict(pydict: Dict[KeyType, ValueType]) -> Optional[TreeNode]:
     mydict: Optional[TreeNode] = None
     for key, value in pydict.items():
         mydict = cons(key, value, mydict)
@@ -101,8 +104,9 @@ def from_dict(pydict: Dict[Any, Any]) -> Optional[TreeNode]:
 
 
 def mfilter(node: Optional[TreeNode],
-            f: Callable[[Any, Any], bool]) -> Dict[Any, Any]:
-    filtered_dict: Dict[Any, Any] = {}
+            f: Callable[[KeyType, ValueType], bool]) \
+        -> Dict[KeyType, ValueType]:
+    filtered_dict: Dict[KeyType, ValueType] = {}
     if node is None:
         return filtered_dict
     filtered_dict.update(mfilter(node.left, f))
@@ -113,8 +117,9 @@ def mfilter(node: Optional[TreeNode],
 
 
 def mmap(node: Optional[TreeNode],
-         f: Callable[[Any, Any], Any]) -> Dict[Any, Any]:
-    mapped_dict: Dict[Any, Any] = {}
+         f: Callable[[KeyType, ValueType],
+         Tuple[KeyType, ValueType]]) -> Dict[KeyType, ValueType]:
+    mapped_dict: Dict[KeyType, ValueType] = {}
     if node is None:
         return mapped_dict
     mapped_dict.update(mmap(node.left, f))
@@ -125,7 +130,7 @@ def mmap(node: Optional[TreeNode],
 
 
 def reduce(n: Optional[TreeNode],
-           f: Callable[[Any, Any, Any], Any],
+           f: Callable[[KeyType, ValueType, int], int],
            initial_state: int) -> int:
     def _reduce(node: Optional[TreeNode], state: int) -> int:
         if node is None:
@@ -138,7 +143,7 @@ def reduce(n: Optional[TreeNode],
 
 
 def iterator(node: Optional[TreeNode]) \
-        -> Generator[Tuple[Any, Any], None, None]:
+        -> Generator[Tuple[KeyType, ValueType], None, None]:
     stack: List[TreeNode] = []
     current: Optional[TreeNode] = node
     while current or stack:

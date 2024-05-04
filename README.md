@@ -30,6 +30,9 @@ based on binary search tree(Variant6).
 
 ## Changelog
 
+- 4.5.2024 - 5
+   - Modify static typing.
+   - Update README.
 - 27.4.2024 - 4
    - Add static typing to the library.
    - Update `check.yml`: --strict in CI for mypy.
