@@ -6,10 +6,13 @@ from typing import Dict, List
 from BinaryTreeDict import cons, remove, size, member, to_dict, from_dict, \
     to_list, mmap, reduce, iterator, concat, mempty, mfilter
 
-from BinaryTreeDict import KeyType, ValueType
-
 
 class TestBinaryTreeDict(unittest.TestCase):
+    def test_cons(self) -> None:
+        mydict = cons(42.5, 4,
+                      cons(42, 3, cons('foo', 2, cons(None, 1, None))))
+        self.assertEqual(str(mydict), "{42: 3, 42.5: 4, None: 1, 'foo': 2}")
+
     def test_api(self) -> None:
         empty = mempty()
         l1 = cons(None, "c", cons(2, "b", cons("a", 1, empty)))
@@ -93,7 +96,8 @@ class TestBinaryTreeDict(unittest.TestCase):
 
     def test_from_dict(self) -> None:
         # 测试从Python字典构建
-        pydict: Dict[KeyType, ValueType] = {'1': 'one', 2: 'two', 3: None}
+        pydict: Dict[int | str | float | None, int | str | float | None] = {
+            '1': 'one', 2: 'two', 3: None}
         mydict = from_dict(pydict)
         self.assertEqual(size(mydict), 3)
         self.assertEqual(member('1', mydict), 'one')
@@ -114,7 +118,8 @@ class TestBinaryTreeDict(unittest.TestCase):
         self.assertEqual(reduce(mydict,
                                 lambda key, value, st:
                                 st, 0), 0)
-        test_data: List[Dict[KeyType, ValueType]]\
+        test_data: List[
+            Dict[int | str | float | None, int | str | float | None]] \
             = [{}, {"a": "1", "b": "2"}, {"a": "1", "b": "2", "c": "3"}]
         for e in test_data:
             mydict = from_dict(e)
@@ -128,9 +133,15 @@ class TestBinaryTreeDict(unittest.TestCase):
         st.dictionaries(st.text(), st.text()),
     )
     def test_PBT_monoid_Associativity(self,
-                                      a: Dict[KeyType, ValueType],
-                                      b: Dict[KeyType, ValueType],
-                                      c: Dict[KeyType, ValueType]) -> None:
+                                      a: Dict[
+                                          int | str | float | None,
+                                          int | str | float | None],
+                                      b: Dict[
+                                          int | str | float | None,
+                                          int | str | float | None],
+                                      c: Dict[
+                                          int | str | float | None,
+                                          int | str | float | None]) -> None:
         dict_a = from_dict(a)
         dict_b = from_dict(b)
         dict_c = from_dict(c)
@@ -141,7 +152,10 @@ class TestBinaryTreeDict(unittest.TestCase):
 
     @given(st.dictionaries(st.text(), st.text()))
     def test_PBT_monoid_Identity_element(self,
-                                         a: Dict[KeyType, ValueType]) -> None:
+                                         a: Dict[
+                                             int | str | float | None,
+                                             int | str | float | None]) \
+            -> None:
         # test for Identity element (empty_dict)
         empty_dict = mempty()
         mydict = from_dict(a)
