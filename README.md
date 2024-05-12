@@ -30,7 +30,6 @@ based on binary search tree(Variant6).
 
 ## Changelog
 
-
 - 12.5.2024 - 6
    - Add ‘test_cons’.
    - Modify the type annotation.
